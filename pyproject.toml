@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "hello-world"
+version = "0.1.0"
+description = "A minimal Google Cloud Function"
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+functions-framework = "^3.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
