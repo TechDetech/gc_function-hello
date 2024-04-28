@@ -52,9 +52,11 @@ jobs:
         uses: google-github-actions/deploy-cloud-functions@v0.1.0
         with:
           name: hello_world
+          entrypoint: main
           runtime: python312
-          project: ${{ secrets.GCP_PROJECT }}
+          project_id:	ticketsaver-421701
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          source_dir: hello_world
 
       - name: Output Deployment Status
         run: echo "Deployment completed successfully."
