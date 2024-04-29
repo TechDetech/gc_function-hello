@@ -8,6 +8,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
       #----------------------------------------------
       # check-out repo and set-up python  ---------
@@ -45,18 +49,30 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-interaction --no-root
       #----------------------------------------------
+      # Authenticate to Google Cloud
+      #----------------------------------------------
+      - name: Authenticate to Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ticketsaver-421701
+          token_format: "access_token"
+          create_credentials_file: true
+          activate_credentials_file: true
+          workload_identity_provider: ${{ secrets.GCP_WIP_ID }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      #----------------------------------------------
       # deploy the code as a Cloud Function
       #----------------------------------------------
       - name: Deploy a Cloud Function
         id: deploy-function
-        uses: google-github-actions/deploy-cloud-functions@v0.1.0
+        uses: google-github-actions/deploy-cloud-functions@v2.1.0
         with:
           name: hello_world
-          entrypoint: main
           runtime: python312
           project_id:	ticketsaver-421701
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
           source_dir: hello_world
+          entry_point: main
 
       - name: Output Deployment Status
         run: echo "Deployment completed successfully."
